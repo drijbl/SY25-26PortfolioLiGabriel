@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Club Signups</title>
+    <meta name="description" content="View list of club signups">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #fef3c7, #fff7ed);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 25px;
+            color: #b45309;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        label {
+            font-weight: bold;
+            color: #78350f;
+        }
+
+        select {
+            padding: 6px;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: 1px solid #cbd5e1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #fcd34d;
+            color: #78350f;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fef3c7;
+        }
+
+        .total {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .message {
+            margin-top: 15px;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-link:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Club Signups</h1>
+<div class="container">
+
+    <label for="clubFilter">Filter by Club:</label>
+    <select id="clubFilter">
+        <option value="all">All</option>
+        <option value="astro">AstroSoc</option>
+        <option value="eng">Ellipsis</option>
+        <option value="math">Math Club</option>
+        <option value="res">SARS+</option>
+        <option value="badminton">Volant</option>
+    </select>
+
+    <div id="signupTableContainer"></div>
+    <div id="totalSignups" class="total"></div>
+    <a href="index.html" class="back-link">Back to Sign-Up Page</a>
+</div>
+
+<script>
+    const clubFilter = document.getElementById("clubFilter");
+    const tableContainer = document.getElementById("signupTableContainer");
+    const totalDiv = document.getElementById("totalSignups");
+
+    function loadSignups() {
+        let allSignups = JSON.parse(localStorage.getItem("clubSignups")) || [];
+
+        const selectedClub = clubFilter.value;
+
+        // Filter signups
+        let filtered = (selectedClub === "all") ? allSignups : allSignups.filter(s => s.club === selectedClub);
+
+        // Clear previous content
+        tableContainer.innerHTML = "";
+        totalDiv.textContent = "";
+
+        if (allSignups.length === 0) {
+            tableContainer.innerHTML = '<div class="message">No sign-ups have been made yet.</div>';
+            return;
+        }
+
+        if (filtered.length === 0) {
+            tableContainer.innerHTML = `<div class="message">No sign-ups for this club yet.</div>`;
+            totalDiv.textContent = `Total Sign-ups: 0`;
+            return;
+        }
+
+        // Create table
+        const table = document.createElement("table");
+        const header = table.insertRow();
+        ["Student ID", "Full Name", "Birthday", "Email", "Mobile", "Grade Level", "Status", "Club", "Reason"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            header.appendChild(th);
+        });
+
+        // Fill table rows
+        filtered.forEach(signup => {
+            const row = table.insertRow();
+            row.insertCell().textContent = signup.studentID;
+            row.insertCell().textContent = signup.fullName;
+            row.insertCell().textContent = signup.birthday;
+            row.insertCell().textContent = signup.email;
+            row.insertCell().textContent = signup.mobilePhone;
+            row.insertCell().textContent = signup.gradeLevel;
+            row.insertCell().textContent = signup.status;
+            row.insertCell().textContent = signup.club;
+            row.insertCell().textContent = signup.reason;
+        });
+
+        tableContainer.appendChild(table);
+        totalDiv.textContent = `Total Sign-ups: ${filtered.length}`;
+    }
+
+    window.onload = loadSignups;
+    clubFilter.addEventListener("change", loadSignups);
+</script>
+
+</body>
+</html>
