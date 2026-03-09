@@ -5,61 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Add a Movie</title>
 <style>
-    :root {
-        --lightest: #e6f9fb;
-        --light: #c3e7eb;
-        --medium: #99d2db;
-        --dark: #66becd;
-    }
+  :root {
+    --lightest: #e6f9fb;
+    --light: #c3e7eb;
+    --medium: #99d2db;
+    --dark: #066a8c;
+    --text-dark: #111;
+  }
 
-    body {
-        font-family: Arial, sans-serif;
-        background-color: var(--lightest);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: var(--lightest);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    color: var(--text-dark);
+    margin: 20px 0;
+  }
 
-    .movie-form {
-        background-color: var(--light);
-        padding: 25px 30px;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        width: 320px;
-    }
+  .movie-form {
+    background-color: var(--light);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 410px;
+  }
 
-    .movie-form h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: var(--dark);
-    }
+  .movie-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--dark);
+  }
 
-    .movie-form label {
-        display: block;
-        margin-top: 10px;
-        color: var(--dark);
-    }
+  .movie-form label {
+    display: block;
+    margin: 10px 0 5px 0;
+    color: var(--text-dark);
+    font-weight: bold;
+  }
 
-    .movie-form input, .movie-form select {
-        width: 100%;
-        padding: 8px 10px;
-        margin-top: 5px;
-        border: 1px solid var(--medium);
-        border-radius: 5px;
-        font-size: 14px;
-    }
+  .movie-form input, 
+  .movie-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--medium);
+    border-radius: 5px;
+    font-size: 14px;
+    color: var(--text-dark);
+    background-color: #fff;
+    box-sizing: border-box;
+  }
 
-    .stars {
-        display: flex;
-        margin: 10px 0;
-        cursor: pointer;
-    }
+  .stars {
+    display: flex;
+    margin: 10px 0;
+    cursor: pointer;
+  }
 
   .stars span {
     font-size: 25px;
     color: #ccc;
     margin-right: 5px;
+    transition: color 0.2s;
   }
 
   .stars span.selected {
@@ -73,9 +81,10 @@
     border: none;
     color: white;
     font-size: 16px;
-    border-radius: 7px;
+    border-radius: 5px;
     margin-top: 15px;
     cursor: pointer;
+    transition: background-color 0.2s;
   }
 
   .movie-form button:hover {
@@ -84,16 +93,33 @@
 
   .movie-list {
     margin-top: 20px;
-    border-top: 1px solid var(--medium);
     padding-top: 10px;
+  }
+
+  .movie-list h3 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--dark);
   }
 
   .movie-item {
     margin-bottom: 10px;
-    padding: 5px;
+    padding: 10px 15px;
     background-color: var(--medium);
     border-radius: 5px;
-    color: white;
+    color: rgb(33, 8, 199);
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+
+  .movie-item span {
+    color: gold; 
+    margin-left: 2px; 
   }
 </style>
 </head>
@@ -133,50 +159,59 @@
 </div>
 
 <script>
-  const stars = document.querySelectorAll('.stars span');
-  let rating = 0;
+const stars = document.querySelectorAll('.stars span');
+let rating = 0;
 
-  stars.forEach(star => {
-    star.addEventListener('click', () => {
-      rating = star.dataset.value;
-      stars.forEach(s => s.classList.remove('selected'));
-      for(let i=0;i<rating;i++){
-        stars[i].classList.add('selected');
-      }
-    });
-  });
-
-  const addMovieButton = document.getElementById('addMovie');
-  const movieList = document.getElementById('movieList');
-
-  addMovieButton.addEventListener('click', () => {
-    const title = document.getElementById('title').value;
-    const year = document.getElementById('year').value;
-    const genre = document.getElementById('genre').value;
-
-    if(title && year && genre && rating > 0){
-        const movie = {title, year, genre, rating};
-      
-        let movies = JSON.parse(localStorage.getItem('movies') || '[]');
-        movies.push(movie);
-        localStorage.setItem('movies', JSON.stringify(movies));
-
-        displayMovies();
+// Star selection
+stars.forEach(star => {
+  star.addEventListener('click', () => {
+    rating = star.dataset.value;
+    stars.forEach(s => s.classList.remove('selected'));
+    for(let i=0;i<rating;i++){
+      stars[i].classList.add('selected');
     }
   });
+});
 
-  function displayMovies(){
-    movieList.innerHTML = '<h3>Movie List</h3>';
-    const movies = JSON.parse(localStorage.getItem('movies') || '[]');
-    movies.forEach(m => {
-      const div = document.createElement('div');
-      div.className = 'movie-item';
-      div.textContent = `${m.title} (${m.year}) - ${m.genre} - Rating: ${m.rating}⭐`;
-      movieList.appendChild(div);
-    });
+const addMovieButton = document.getElementById('addMovie');
+const movieList = document.getElementById('movieList');
+
+// Add movie to localStorage
+addMovieButton.addEventListener('click', () => {
+  const title = document.getElementById('title').value.trim();
+  const year = document.getElementById('year').value.trim();
+  const genre = document.getElementById('genre').value;
+
+  if(title && year && genre && rating > 0){
+    const movie = {title, year, genre, rating};
+    
+    let movies = JSON.parse(localStorage.getItem('movies') || '[]');
+    movies.push(movie);
+    localStorage.setItem('movies', JSON.stringify(movies));
+
+    displayMovies();
   }
+});
 
-  displayMovies();
+// Lists movies from localStorage
+function displayMovies(){
+  movieList.innerHTML = '<h3>Movie List</h3>';
+  const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+  movies.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'movie-item';
+
+    const textNode = document.createTextNode(`${m.title} (${m.year}) - ${m.genre}, Rating:`);
+    const starsNode = document.createElement('span');
+    starsNode.textContent = '★'.repeat(m.rating);
+
+    div.appendChild(textNode);
+    div.appendChild(starsNode);
+    movieList.appendChild(div);
+  });
+}
+
+displayMovies();
 </script>
 
 </body>
