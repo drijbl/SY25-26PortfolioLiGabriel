@@ -183,12 +183,22 @@ addMovieButton.addEventListener('click', () => {
   const genre = document.getElementById('genre').value;
 
   if(title && year && genre && rating > 0){
-    const movie = {title, year, genre, rating};
-    
     let movies = JSON.parse(localStorage.getItem('movies') || '[]');
-    movies.push(movie);
-    localStorage.setItem('movies', JSON.stringify(movies));
 
+    // Find an existing movie with the same title (case-insensitive)
+    const index = movies.findIndex(m => m.title.toLowerCase() === title.toLowerCase());
+
+    if(index !== -1){
+      // Update: changes movie information if the title already exists
+      movies[index].year = year;
+      movies[index].genre = genre;
+      movies[index].rating = Math.round((Number(movies[index].rating) + Number(rating)) / 2);
+    } else {
+      // Create: adds a new movie if the title does not exist
+      movies.push({title, year, genre, rating});
+    }
+
+    localStorage.setItem('movies', JSON.stringify(movies));
     displayMovies();
   }
 });
@@ -197,16 +207,36 @@ addMovieButton.addEventListener('click', () => {
 function displayMovies(){
   movieList.innerHTML = '<h3>Movie List</h3>';
   const movies = JSON.parse(localStorage.getItem('movies') || '[]');
-  movies.forEach(m => {
+
+  movies.forEach((m, index) => {
     const div = document.createElement('div');
     div.className = 'movie-item';
 
     const textNode = document.createTextNode(`${m.title} (${m.year}) - ${m.genre}, Rating:`);
+    
     const starsNode = document.createElement('span');
     starsNode.textContent = '★'.repeat(m.rating);
 
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.style.marginLeft = '10px';
+
+    deleteBtn.addEventListener('click', () => {
+      const confirmDelete = confirm(`Delete "${m.title}"?`);
+
+      if(confirmDelete){
+        let movies = JSON.parse(localStorage.getItem('movies') || '[]');
+        movies.splice(index, 1); // remove item
+        localStorage.setItem('movies', JSON.stringify(movies));
+        displayMovies(); // refresh list
+      }
+    });
+
     div.appendChild(textNode);
     div.appendChild(starsNode);
+    div.appendChild(deleteBtn);
+
     movieList.appendChild(div);
   });
 }
