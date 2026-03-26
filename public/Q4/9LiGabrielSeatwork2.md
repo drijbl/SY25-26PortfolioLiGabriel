@@ -7,7 +7,7 @@ the values to top and left or changing it to bottom and right changed the distan
 
 **Guided Question**: What happens when you scroll the page? Why does the footer behave differently from position relative?
 
-> When you scroll the page, the footer remains at the bottom of the page, with the rest of the page and the elements moving with the footer above them. This happens because position: absolute specifies the footer to be independent to the scrolling body of the page.
+> When you scroll the page, the footer remains at the bottom of the page, with the rest of the page and the elements moving with the footer above them. This happens because position: fixed specifies the footer to be independent to the scrolling body of the page.
 
 **Guided Question**: What is the effect of position: absolute on an element? How is it different from fixed?
 
