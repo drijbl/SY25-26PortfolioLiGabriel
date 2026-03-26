@@ -18,11 +18,6 @@ Compared to position: fixed, which positions the element in the same place regar
 
 > The z-index in CSS basically determines the "priority level" of an object when it comes to stacking elements, with HTML elements with higher z-index values appearing above those with lower values. In this case, the notice appears on top of the content because it has a higher z-index value. If we were to swap these values, the notice would appear below the content instead.
 
-## Challenge
-What changes that you have to do on the code that will position .notice box on the top right corner of the .content box? Please write the code on paper as well (both html and css on the part of .notice and .content).
-Try to change the position of .content to relative then to fixed. What do you observed each time?
-What do you observe on about the effect of z-index on .notice and .content boxes?
-
 ## Reflection Questions
 **a. Could you summarize the differences between the CSS position values (static, relative, absolute, fixed)?**
 - Static: Positions an element according to the default positioning, appearing in the normal document flow.
